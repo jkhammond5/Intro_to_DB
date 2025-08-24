@@ -1,33 +1,42 @@
-import mysql.connector
-from mysql.connector import Error
+CREATE DATABASE alx_book_store;
 
-def create_database():
-    connection = None
-    cursor = None
-    try:
-        # Step 1: Connect to MySQL server
-        connection = mysql.connector.connect(
-            host="localhost",      # or your server IP
-            user="root",           # replace with your MySQL username
-            password="Realities24!"  # replace with your MySQL password
-        )
+USE alx_book_store;
 
-        if connection.is_connected():
-            cursor = connection.cursor()
-            # Step 2: Create database if it doesn’t exist
-            cursor.execute("CREATE DATABASE IF NOT EXISTS alx_book_store")
-            print("Database 'alx_book_store' created successfully!")
+CREATE TABLE Authors (
+    author_id INT PRIMARY KEY AUTO_INCREMENT,
+    author_name VARCHAR(215) NOT NULL
+);
 
-    except Error as e:
-        print(f"Error while connecting to MySQL: {e}")
+CREATE TABLE Books (
+    book_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(130) NOT NULL,
+    author_id INT,
+    price DOUBLE NOT NULL,
+    publication_date DATE,
+    FOREIGN KEY (author_id) REFERENCES Authors(author_id)
+);
 
-    finally:
-        # Step 3: Close cursor and connection safely
-        if cursor is not None:
-            cursor.close()
-        if connection is not None and connection.is_connected():
-            connection.close()
-            print("MySQL connection is closed.")
+CREATE TABLE Customers (
+    customer_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_name VARCHAR(215) NOT NULL,
+    email VARCHAR(215) UNIQUE,
+    address TEXT
+);
 
-if __name__ == "__main__":
-    create_database()
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id INT,
+    order_date DATE,
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
+);
+
+CREATE TABLE Order_Details (
+    orderdetailid INT PRIMARY KEY AUTO_INCREMENT,
+    order_id INT,
+    book_id INT,
+    quantity DOUBLE NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (book_id) REFERENCES Books(book_id)
+);
+
+
